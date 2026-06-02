@@ -1,0 +1,48 @@
+name: Build and Test Weather API
+
+on:
+push:
+: [main]
+
+jobs: jobs
+build:
+run-on: ubuntu-latest
+
+steps:
+- uses: actions/checkout@v4
+
+- name: Build Docker image
+run: docker build -t weather-api:latest .
+
+- name: Test health endpoint (without API key)
+run: |
+docker run -d \
+-p 5000:5000 \
+--name weather-test \
+weather-api:latest
+
+Sleep 3
+
+curl -f http://localhost:5000/health || exit 1
+
+- name: Home endpoint test
+run: curl -f http://localhost:5000/ | exit 1
+
+- name: Test with API key
+run: |
+docker stop weather-test
+docker rm weather-test
+
+docker run -d \
+-p 5000:5000 \
+-e OPENWEATHER_API_KEY="${{ secrets.OPENWEATHER_API_KEY }}" \
+--name weather-test \
+weather-api:latest
+
+Sleep 3
+
+# Test that API key loads properly
+curl -f " http://localhost:5000/weather? city=London&quot ; || exit 1
+
+- name: Success
+run: echo "Build and all tests pass!"
