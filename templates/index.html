@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clima OpenWeather</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <section class="card search-card">
+      <h1>Buscar clima</h1>
+      <p>Escribe el nombre de la ciudad y presiona Buscar para ver el clima actual.</p>
+      <form id="weather-form">
+        <label for="city">Ciudad</label>
+        <input type="text" id="city" name="city" placeholder="Ej. Madrid" autocomplete="off" required />
+        <button type="submit">Buscar</button>
+      </form>
+      <div id="message" class="message"></div>
+    </section>
+
+    <section id="result" class="card result-card hidden">
+      <div class="result-header">
+        <div id="weather-icon" class="weather-icon">☀️</div>
+        <div>
+          <h2 id="location"></h2>
+          <p id="description"></p>
+        </div>
+      </div>
+      <div class="weather-details">
+        <div class="detail-item">
+          <span class="detail-label">Temperatura</span>
+          <strong id="temperature"></strong>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Sensación</span>
+          <strong id="feels_like"></strong>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Humedad</span>
+          <strong id="humidity"></strong>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Viento</span>
+          <strong id="wind"></strong>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('weather-form');
+    const message = document.getElementById('message');
+    const resultSection = document.getElementById('result');
+    const iconEl = document.getElementById('weather-icon');
+    const locationEl = document.getElementById('location');
+    const descriptionEl = document.getElementById('description');
+    const temperatureEl = document.getElementById('temperature');
+    const feelsLikeEl = document.getElementById('feels_like');
+    const humidityEl = document.getElementById('humidity');
+    const windEl = document.getElementById('wind');
+
+    function showMessage(text, type = 'info') {
+      message.textContent = text;
+      message.className = `message ${type}`;
+    }
+
+    function getWeatherIcon(main, description) {
+      const normalized = (main || description || '').toLowerCase();
+      if (normalized.includes('rain') || normalized.includes('lluv')) {
+        return '🌧️';
+      }
+      if (normalized.includes('cloud') || normalized.includes('nublado') || normalized.includes('nub')) {
+        return '☁️';
+      }
+      return '☀️';
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const city = document.getElementById('city').value.trim();
+      if (!city) {
+        showMessage('Por favor ingresa una ciudad.', 'error');
+        resultSection.classList.add('hidden');
+        return;
+      }
+
+      showMessage('Buscando clima...', 'info');
+      resultSection.classList.add('hidden');
+
+      try {
+        const response = await fetch(`/weather?city=${encodeURIComponent(city)}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          showMessage(data.message || 'Error al obtener el clima.', 'error');
+          return;
+        }
+
+        const weather = data.weather || {};
+        const locationName = `${data.location?.name || city}${data.location?.country ? ', ' + data.location.country : ''}`;
+        const description = weather.description ? weather.description.charAt(0).toUpperCase() + weather.description.slice(1) : 'Sin descripción';
+        const icon = getWeatherIcon(weather.main, description);
+
+        iconEl.textContent = icon;
+        locationEl.textContent = locationName;
+        descriptionEl.textContent = description;
+        temperatureEl.textContent = `${weather.current ?? '-'} °C`;
+        feelsLikeEl.textContent = `${weather.feels_like ?? '-'} °C`;
+        humidityEl.textContent = `${data.humidity ?? '-'} %`;
+        windEl.textContent = `${data.wind?.speed ?? '-'} m/s`;
+
+        showMessage('', 'info');
+        resultSection.classList.remove('hidden');
+      } catch (error) {
+        showMessage('No se pudo conectar con el servidor.', 'error');
+      }
+    });
+  </script>
+</body>
+</html>

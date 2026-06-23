@@ -1,0 +1,143 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(180deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+  color: #f4f7fb;
+}
+
+.container {
+  width: min(980px, calc(100% - 32px));
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(12px);
+  margin-bottom: 24px;
+}
+
+.search-card h1,
+.search-card p {
+  margin: 0;
+}
+
+.search-card p {
+  margin-top: 12px;
+  color: #cfdcff;
+}
+
+label {
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.1);
+  color: #f4f7fb;
+  font-size: 1rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #6ec1ff;
+  box-shadow: 0 0 0 4px rgba(110, 193, 255, 0.12);
+}
+
+button {
+  margin-top: 18px;
+  width: 100%;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 14px;
+  background: #4facfe;
+  color: #0b1633;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  background: #00f2fe;
+}
+
+.message {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+
+.message.info {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e7f3ff;
+}
+
+.message.error {
+  background: rgba(255, 99, 99, 0.16);
+  color: #ffe6e6;
+}
+
+.result-card {
+  transition: transform 0.2s ease;
+}
+
+.result-card.hidden {
+  display: none;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.weather-icon {
+  width: 96px;
+  height: 96px;
+  font-size: 3.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.weather-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.detail-item {
+  background: rgba(255, 255, 255, 0.07);
+  padding: 18px;
+  border-radius: 18px;
+}
+
+.detail-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #bed1ff;
+}
+
+.hidden {
+  display: none !important;
+}

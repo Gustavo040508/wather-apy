@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 
 load_dotenv()
 
@@ -151,12 +151,18 @@ def health_check():
 
 @app.route("/", methods=["GET"])
 def index():
+    return render_template("index.html")
+
+
+@app.route("/api", methods=["GET"])
+def api_info():
     return jsonify(
         {
             "service": "OpenWeather Flask API",
             "endpoints": {
                 "GET /health": "API health check",
-                "GET /": "Service information",
+                "GET /": "Web interface",
+                "GET /api": "Service information (JSON)",
                 "GET /weather": "Get weather by city or latitude/longitude",
                 "POST /weather/multiple": "Fetch multiple locations in one request",
             },
